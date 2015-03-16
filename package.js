@@ -8,15 +8,17 @@ Package.describe({
   // By default, Meteor will default to using README.md for documentation.
   // To avoid submitting documentation, set this field to null.
   documentation: 'README.md'
-});
+})
 
 Package.onUse(function(api) {
-  api.versionsFrom('1.0.3.2');
-  api.addFiles('kriegslustig:filter.js');
-});
+  api.versionsFrom('1.0.3.2')
+  api.use('tracker')
+  api.export('KriegslustigFilter', 'client')
+  api.addFiles('kriegslustig:filter.js', 'client')
+})
 
 Package.onTest(function(api) {
-  api.use('tinytest');
-  api.use('kriegslustig:filter');
-  api.addFiles('kriegslustig:filter-tests.js');
-});
+  api.use('tinytest')
+  api.use('kriegslustig:filter')
+  api.addFiles('kriegslustig:filter-tests.js')
+})
