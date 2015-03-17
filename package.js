@@ -16,5 +16,5 @@ Package.onUse(function(api) {
 Package.onTest(function(api) {
   api.use(['kriegslustig:filter', 'tinytest', 'test-helpers'])
   api.export('KriegslustigFilter', ['client', 'server'])
-  api.addFiles('kriegslustig:filter-tests.js', ['client', 'server'])
+  api.addFiles('kriegslustigFilter-tests.js', ['client', 'server'])
 })
