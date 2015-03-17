@@ -6,6 +6,19 @@ KriegslustigFilter = {
 , _items: []
   // The dep for items
 , _itemsDep: new Tracker.Dependency
+  // init should be called AFTER collection is set. It set's an autorun on changes in that collection
+, init: function () {
+    var self = this
+  , updateItemsWrapper = function () {
+      self._updateItems()
+    }
+    self._updateItems()
+    self.collection.find().observe({
+      added: updateItemsWrapper
+    , changed: updateItemsWrapper
+    , removed: updateItemsWrapper
+    })
+  }
   // Filters are added to this object when newFilter is called
 , subFilters: {}
   // The return values of all subFilters.generateSubFilter are concatinated into this object. It's later used as the actual query
@@ -23,7 +36,7 @@ KriegslustigFilter = {
     self._itemsDep.changed()
   }
   // This regenerates the concatinatedFilter, reruns the query and runs filter._setItems
-, updateItems: function () {
+, _updateItems: function () {
     var self = this
     self.concatinatedFilter = {}
     _.map(self.subFilters, function (subFilter) {
