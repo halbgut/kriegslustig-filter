@@ -38,14 +38,41 @@ KriegslustigFilter = {
   // This regenerates the concatinatedFilter, reruns the query and runs filter._setItems
 , _updateItems: function () {
     var self = this
-    self.concatinatedFilter = {}
-    _.map(self.subFilters, function (subFilter) {
-      if(subFilter.active) {
-        _.extend(self.concatinatedFilter, subFilter.generateSubFilter())
-      }
-      return subFilter
-    })
+    self.concatinatedFilter = self._getConcatinatedFilters()
     self._setItems(self.queryItems(self.concatinatedFilter))
+  }
+, _getConcatinatedFilters: function () {
+    var self = this
+  , concatinatedFilter = {}
+    _.each(self.subFilters, function (subFilter) {
+      if(subFilter.active) {
+        concatinatedFilter = self._deepExtendOwn(concatinatedFilter, subFilter.generateSubFilter())
+      }
+    })
+    return concatinatedFilter
+  }
+, _deepExtendOwn: function (thisObject, withObject) {
+    var self = this
+  , returnDict = {}
+    for(key in thisObject) {
+      if(thisObject.hasOwnProperty(key)) {
+        if(withObject.hasOwnProperty(key)) {
+          if(typeof thisObject[key] == 'object' && typeof withObject[key] == 'object') {
+            returnDict[key] = self._deepExtendOwn(thisObject[key], withObject[key])
+          } else {
+            returnDict[key] = withObject[key]
+          }
+        } else {
+          returnDict[key] = thisObject[key]
+        }
+      }
+    }
+    for(key in withObject) {
+      if(withObject.hasOwnProperty(key) && !thisObject.hasOwnProperty(key)) {
+        returnDict[key] = withObject[key]
+      }
+    }
+    return returnDict
   }
   // Use this to add a filter newProps is a dictionary that will be concatinated with the filterTemplate read it for further information
 , newSubFilter: function (subFilterName, newProps) {
