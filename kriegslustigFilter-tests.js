@@ -62,14 +62,30 @@ Tinytest.addAsync('newSubFilter', function (test, onComplete) {
   kriegslustigFilterTestInstance.collection.insert({
     someInt: 4
   })
-  kriegslustigFilterTestInstance.newSubFilter('testFilter', {
+  kriegslustigFilterTestInstance.newSubFilter('biggerThen', {
     active: false
   , attributes: {
       biggerThen: {
         dataType: 'number'
       , value: 2
       }
-    , smallerThen: {
+    }
+  , generateSubFilter: function () {
+      var self = this
+      return {
+        someInt: {
+          $gt: self.getAttribute('biggerThen')
+        }
+      }
+    }
+  })
+  test.equal(kriegslustigFilterTestInstance.getItems().length, 2, 'If the active attribute is set to false the subfilter should be ignored')
+  kriegslustigFilterTestInstance.subFilters.biggerThen.activate()
+  test.equal(kriegslustigFilterTestInstance.getItems().length, 1, 'If the active attribute is set to true the shubfilter should be used')
+  kriegslustigFilterTestInstance.newSubFilter('lowerThen', {
+    active: true
+  , attributes: {
+      lowerThen: {
         dataType: 'number'
       , value: 100
       }
@@ -78,14 +94,17 @@ Tinytest.addAsync('newSubFilter', function (test, onComplete) {
       var self = this
       return {
         someInt: {
-          $gt: self.getAttribute('biggerThen')
-        , $lt: self.getAttribute('smallerThen')
+          $lt: self.getAttribute('lowerThen')
         }
       }
     }
   })
-  test.equal(kriegslustigFilterTestInstance.getItems().length, 2, 'If the active attribute is set to false the subfilter should be ignored')
-  kriegslustigFilterTestInstance.subFilters.testFilter.activate()
-  test.equal(kriegslustigFilterTestInstance.getItems().length, 1, 'If the active attribute is set to true the shubfilter should be used')
+  kriegslustigFilterTestInstance.collection.insert({
+    someInt: 101
+  })
+  kriegslustigFilterTestInstance.collection.insert({
+    someInt: 99
+  })
+  test.equal(kriegslustigFilterTestInstance.getItems().length, 2, 'You should be able to combine multiple filters')
   onComplete()
 })
