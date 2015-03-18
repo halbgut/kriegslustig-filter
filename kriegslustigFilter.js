@@ -71,23 +71,41 @@ KriegslustigFilter = {
     }
     self.subFilters[subFilterName] = _.extend(self.filterTemplate, newProps)
     // This should be called to set attributes (expl.: someFilter.subFilters.usage.setAttribute('sampleAttribute', true))
-    self.subFilters[subFilterName].setAttribute = function (attribute, newValue) {
-      var that = this
-      // Check if the attribute matches the pattern
-      if(that.attributes[attribute]
-        && that.attributes[attribute].dataType) {
-        // check if the datatype matches
-        if(typeof newValue == that.attributes[attribute].dataType) {
-          that.attributes[attribute].value = newValue
-          // Update _items and trigger the dep
-          self.updateItems()
+    _.extend(self.subFilters[subFilterName], {
+      setAttribute: function (attribute, newValue) {
+        var that = this
+        // Check if the attribute matches the pattern
+        if(that.attributes[attribute]
+          && that.attributes[attribute].dataType) {
+          // check if the datatype matches
+          if(typeof newValue == that.attributes[attribute].dataType) {
+            that.attributes[attribute].value = newValue
+            // Update _items and trigger the dep
+            self.updateItems()
+            return true
+          } else {
+            console.log('data type should be ' + that.attributes[attribute].dataType + ', ' +  typeof newValue + ' was passed instead')
+          }
         } else {
-          console.log('data type should be ' + that.attributes[attribute].dataType + ', ' +  typeof newValue + ' was passed instead')
+          console.log('Invalid attribute name: ' + attribute)
         }
-      } else {
-        console.log('Invalid attribute name: ' + attribute)
+        return false
       }
-    }
+    , getAttribute: function (attributeName) {
+        var that = this
+        return that.attributes[attributeName].value
+      }
+    , activate: function () {
+        var that = this
+        that.active = true
+        self._updateItems()
+      }
+    , deactivate: function () {
+        var that = this
+        that.active = false
+        self._updateItems()
+      }
+    })
   }
   // This executes the query saved in concatinatedFilter. It can be used the get _items as an unreactive array
 , queryItems: function () {
