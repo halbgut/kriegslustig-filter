@@ -52,3 +52,40 @@ Tinytest.addAsync('_itemsDep.depend()', function (test, onComplete) {
   }, 1)
 })
 
+Tinytest.addAsync('newSubFilter', function (test, onComplete) {
+  var kriegslustigFilterTestInstance = Object.create(KriegslustigFilter)
+  kriegslustigFilterTestInstance.collection = new Mongo.Collection()
+  kriegslustigFilterTestInstance.init()
+  kriegslustigFilterTestInstance.collection.insert({
+    someInt: 2
+  })
+  kriegslustigFilterTestInstance.collection.insert({
+    someInt: 4
+  })
+  kriegslustigFilterTestInstance.newSubFilter('testFilter', {
+    active: false
+  , attributes: {
+      biggerThen: {
+        dataType: 'number'
+      , value: 2
+      }
+    , smallerThen: {
+        dataType: 'number'
+      , value: 100
+      }
+    }
+  , generateSubFilter: function () {
+      var self = this
+      return {
+        someInt: {
+          $gt: self.getAttribute('biggerThen')
+        , $lt: self.getAttribute('smallerThen')
+        }
+      }
+    }
+  })
+  test.equal(kriegslustigFilterTestInstance.getItems().length, 2, 'If the active attribute is set to false the subfilter should be ignored')
+  kriegslustigFilterTestInstance.subFilters.testFilter.activate()
+  test.equal(kriegslustigFilterTestInstance.getItems().length, 1, 'If the active attribute is set to true the shubfilter should be used')
+  onComplete()
+})
