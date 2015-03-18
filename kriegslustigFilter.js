@@ -97,8 +97,9 @@ KriegslustigFilter = {
       }
     }
     self.subFilters[subFilterName] = _.extend(self.filterTemplate, newProps)
-    // This should be called to set attributes (expl.: someFilter.subFilters.usage.setAttribute('sampleAttribute', true))
+    // add attributes to the subfilter that shouldn't be overwritten
     _.extend(self.subFilters[subFilterName], {
+      // This should be called to set attributes (expl.: someFilter.subFilters.usage.setAttribute('sampleAttribute', true))
       setAttribute: function (attribute, newValue) {
         var that = this
         // Check if the attribute matches the pattern
@@ -131,6 +132,12 @@ KriegslustigFilter = {
         var that = this
         that.active = false
         self._updateItems()
+      }
+    , toggleActiveState: function () {
+        var that = this
+        that.active = !that.active
+        self._updateItems()
+        return that.active
       }
     })
   }
