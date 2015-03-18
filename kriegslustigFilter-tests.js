@@ -1,5 +1,5 @@
 Tinytest.add('init', function (test) {
-  var TestCollection = new Mongo.Collection()
+  var TestCollection = new Mongo.Collection(null)
 , kriegslustigFilterTestInstance = Object.create(KriegslustigFilter)
   kriegslustigFilterTestInstance.collection = TestCollection
   kriegslustigFilterTestInstance.init()
@@ -10,7 +10,7 @@ Tinytest.add('init', function (test) {
 });
 
 Tinytest.add('getItems', function (test) {
-  var TestCollection = new Mongo.Collection()
+  var TestCollection = new Mongo.Collection(null)
 , kriegslustigFilterTestInstance = Object.create(KriegslustigFilter)
   kriegslustigFilterTestInstance.collection = TestCollection
   kriegslustigFilterTestInstance.init()
@@ -26,7 +26,7 @@ Tinytest.add('getItems', function (test) {
 
 Tinytest.add('Listen for changes in the collection', function (test) {
   var kriegslustigFilterTestInstance = Object.create(KriegslustigFilter)
-  kriegslustigFilterTestInstance.collection = new Mongo.Collection()
+  kriegslustigFilterTestInstance.collection = new Mongo.Collection(null)
   kriegslustigFilterTestInstance.init()
   kriegslustigFilterTestInstance.collection.insert({
     test: true
@@ -37,7 +37,7 @@ Tinytest.add('Listen for changes in the collection', function (test) {
 Tinytest.addAsync('_itemsDep.depend()', function (test, onComplete) {
   var kriegslustigFilterTestInstance = Object.create(KriegslustigFilter)
 , returnedItemValue = false
-  kriegslustigFilterTestInstance.collection = new Mongo.Collection()
+  kriegslustigFilterTestInstance.collection = new Mongo.Collection(null)
   kriegslustigFilterTestInstance.init()
   Tracker.autorun(function (comp) {
     var returnedItems = kriegslustigFilterTestInstance.getItems()
@@ -54,7 +54,7 @@ Tinytest.addAsync('_itemsDep.depend()', function (test, onComplete) {
 
 Tinytest.addAsync('newSubFilter', function (test, onComplete) {
   var kriegslustigFilterTestInstance = Object.create(KriegslustigFilter)
-  kriegslustigFilterTestInstance.collection = new Mongo.Collection()
+  kriegslustigFilterTestInstance.collection = new Mongo.Collection(null)
   kriegslustigFilterTestInstance.init()
   kriegslustigFilterTestInstance.collection.insert({
     someInt: 2
@@ -105,6 +105,7 @@ Tinytest.addAsync('newSubFilter', function (test, onComplete) {
   kriegslustigFilterTestInstance.collection.insert({
     someInt: 99
   })
-  test.equal(kriegslustigFilterTestInstance.getItems().length, 2, 'You should be able to combine multiple filters')
+  test.equal(kriegslustigFilterTestInstance.getItems().length, 2, 'You should be able to combine multiple subFilters')
+  test.ok(!kriegslustigFilterTestInstance.subFilters.lowerThen.setAttribute('lowerThen', 'somestring'), 'setAttribute should return false if a wrong data type is passed')
   onComplete()
 })
