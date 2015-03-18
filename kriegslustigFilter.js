@@ -109,7 +109,7 @@ KriegslustigFilter = {
           if(typeof newValue == that.attributes[attribute].dataType) {
             that.attributes[attribute].value = newValue
             // Update _items and trigger the dep
-            self.updateItems()
+            self._updateItems()
             return true
           } else {
             console.log('data type should be ' + that.attributes[attribute].dataType + ', ' +  typeof newValue + ' was passed instead')
