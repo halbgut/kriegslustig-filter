@@ -1,6 +1,6 @@
 Package.describe({
   name: 'kriegslustig:filter',
-  version: '0.0.2',
+  version: '0.0.3',
   summary: 'A reactive interface for complex dynamic mongo selectors based on human created content',
   git: 'https://github.com/Kriegslustig/kriegslustig-filter',
   documentation: 'README.md'
